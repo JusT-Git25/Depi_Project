@@ -1,0 +1,10 @@
+[
+  {"test": "Blood Pressure", "value": "138/86", "unit": "mmHg"},
+  {"test": "Total Cholesterol", "value": 212, "unit": "mg/dL"},
+  {"test": "Weight", "value": 180, "unit": "lbs"},
+  {"test": "Height", "value": 175, "unit": "cm"},
+  {"test": "Age", "value": 55, "unit": "years"},
+  {"test": "Sex", "value": "Male"},
+  {"test": "Smoker", "value": 0},
+  {"test": "HbA1c", "value": 6.1, "unit": "%"}
+]
