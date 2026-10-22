@@ -30,8 +30,8 @@ null_counts = data.isnull().sum().sum()
 print(f"Total Missing / Null Values: {null_counts}")
 
 # Target class distribution
-class_counts = data["Diabetes"].value_counts()
-class_pcts = data["Diabetes"].value_counts(normalize=True) * 100
+class_counts = data["Diabetes_012"].value_counts()
+class_pcts = data["Diabetes_012"].value_counts(normalize=True) * 100
 print("\n--- Target Class Distribution ---")
 for cls in [0, 1]:
     name = "Non-Diabetic" if cls == 0 else "Diabetic/Pre"
@@ -44,7 +44,7 @@ print(data[key_features].describe().round(2).to_string())
 
 # 4. Correlation with Target (Top Risk Drivers)
 print("\n--- Top Features Correlated with Diabetes ---")
-correlations = data.corr()["Diabetes"].drop("Diabetes").sort_values(ascending=False)
+correlations = data.corr()["Diabetes_012"].drop("Diabetes_012").sort_values(ascending=False)
 print(correlations.round(4).to_string())
 
 # ==========================================================
@@ -84,4 +84,4 @@ data["TotalUnhealthyDays"] = data["PhysHlth"] + data["MentHlth"]
 # Check if engineered features have stronger correlation with Diabetes
 new_features = ["CardioRiskIndex", "BMICategory", "MetabolicSyndrome", "TotalUnhealthyDays"]
 print("Correlations of New Engineered Features:")
-print(data[new_features + ["Diabetes"]].corr()["Diabetes"].drop("Diabetes").round(4))
+print(data[new_features + ["Diabetes_012"]].corr()["Diabetes_012"].drop("Diabetes_012").round(4))
