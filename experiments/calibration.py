@@ -10,20 +10,22 @@ For two LightGBM variants we compare three versions of the probabilities:
 using Brier score, log loss and expected calibration error (ECE), and plot reliability
 curves. Calibrators are fitted on a held-out calibration split, never on the test set.
 
-Outputs:  calibration_curves.png   artifacts/calibration_results.csv
+Outputs:  experiments/calibration_curves.png   artifacts/calibration_results.csv
+Run from repo root:  python -m experiments.calibration
 """
 import matplotlib
 
 matplotlib.use("Agg")
+from pathlib import Path
+
 import lightgbm as lgb
 import matplotlib.pyplot as plt
 import pandas as pd
 from sklearn.calibration import calibration_curve
 
-from common import (
+from production.common import (
     ARTIFACT_DIR,
     LGBM_PARAMS,
-    ROOT,
     TARGET_RECALL,
     apply_calibrator,
     calibration_metrics,
@@ -33,6 +35,8 @@ from common import (
     select_method,
     threshold_report,
 )
+
+OUT_DIR = Path(__file__).resolve().parent
 
 METHODS = ["none", "sigmoid", "isotonic"]
 LABELS = {"none": "Uncalibrated", "sigmoid": "Platt (sigmoid)", "isotonic": "Isotonic"}
@@ -117,7 +121,7 @@ def main():
         ax.legend(loc="upper left")
     fig.suptitle("Reliability curves on the test set (10 equal-size bins)", fontsize=13, fontweight="bold")
     fig.tight_layout()
-    fig.savefig(ROOT / "calibration_curves.png", dpi=200)
+    fig.savefig(OUT_DIR / "calibration_curves.png", dpi=200)
     print("\nSaved calibration_curves.png and artifacts/calibration_results.csv")
 
 

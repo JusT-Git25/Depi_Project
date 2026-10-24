@@ -1,6 +1,6 @@
 """Inference API for the packaged diabetes risk model.
 
-    from predict import predict_risk
+    from production.predict import predict_risk
     result = predict_risk({"HighBP": 1, "HighChol": 1, ...})   # all 21 columns
 
 Accepts one patient (dict) or several (list of dicts / DataFrame). Returns a dict, or a
@@ -13,7 +13,7 @@ Input coding follows the CDC (BRFSS) dataset:
     MentHlth/PhysHlth  days of poor health in the past 30 (0-30)
     Age              13 age bands: 1 = 18-24, 2 = 25-29, ... 9 = 55-59, ... 13 = 80+
     Education        1-6      Income  1-8
-Run `python predict.py` for a demo with three sample patients.
+Run `python -m production.predict` for a demo with three sample patients.
 """
 from __future__ import annotations
 
@@ -24,10 +24,11 @@ from pathlib import Path
 
 import joblib
 import lightgbm as lgb
+import numpy as np
 import pandas as pd
 import sklearn
 
-from common import MODEL_PATH, apply_calibrator, engineer_features
+from production.common import MODEL_PATH, apply_calibrator, engineer_features
 
 DISCLAIMER = "Screening aid only - not a diagnosis."
 MIN_FACTOR_IMPACT = 0.10   # log-odds; smaller contributions are noise, not worth showing as "risk factors"
@@ -57,23 +58,29 @@ def _to_frame(patient_data, bundle: dict) -> pd.DataFrame:
     elif isinstance(patient_data, pd.DataFrame):
         df = patient_data.copy()
     else:
-        df = pd.DataFrame(list(patient_data))
+        rows = list(patient_data)
+        if len(rows) == 0:
+            raise ValueError("No patient records provided.")
+        df = pd.DataFrame(rows)
 
     missing = [c for c in bundle["raw_features"] if c not in df.columns]
     if missing:
         raise ValueError(f"Missing patient fields: {missing}")
     df = df[bundle["raw_features"]]
     try:
-        df = df.apply(pd.to_numeric)
+        df = df.apply(pd.to_numeric, errors="raise")
     except (ValueError, TypeError) as exc:
         raise ValueError(f"All patient fields must be numeric: {exc}") from exc
-    if df.isnull().any().any():
-        raise ValueError(f"Null values in fields: {list(df.columns[df.isnull().any()])}")
+    # NaN = missing (lab-partial input). The missing-robust model handles NaN
+    # natively via LightGBM; only reject all-missing rows.
+    if df.isnull().all(axis=1).any():
+        raise ValueError("At least one feature value is required (all 21 are NaN).")
 
     for col, (lo, hi) in bundle["input_ranges"].items():
-        bad = (df[col] < lo) | (df[col] > hi)
+        vals = pd.to_numeric(df[col], errors="coerce")
+        bad = vals.notna() & ((vals < lo) | (vals > hi))
         if bad.any():
-            raise ValueError(f"{col}={df.loc[bad, col].iloc[0]} is outside the valid range [{lo:g}, {hi:g}]")
+            raise ValueError(f"{col}={vals.loc[bad].iloc[0]} is outside the valid range [{lo:g}, {hi:g}]")
     return df.reset_index(drop=True)
 
 
@@ -87,21 +94,32 @@ def predict_risk(patient_data, model_path: str | Path = MODEL_PATH):
     raw = model.predict_proba(X)[:, 1]
     scores = apply_calibrator(bundle["calibration_method"], bundle["calibrator"], raw)
     # Per-patient feature contributions (log-odds) straight from LightGBM; last column is the bias.
-    contrib = model.predict(X, pred_contrib=True)[:, :-1]
+    # Non-LightGBM models don't support pred_contrib, so fall back to no factors.
+    try:
+        contrib = model.predict(X, pred_contrib=True)[:, :-1]
+    except (TypeError, AttributeError):
+        contrib = np.zeros_like(X.to_numpy(dtype=float))
 
     results = []
+    # Normal case: threshold (e.g. ~0.13) < high_risk_cutoff (0.50), giving
+    # Low < threshold <= Elevated < 0.50 <= High. The max() keeps this sane if a
+    # future threshold ever exceeds the cutoff (then every flagged patient is High).
+    high_cutoff = max(bundle["high_risk_cutoff"], bundle["threshold"])
     for i, score in enumerate(scores):
-        if score >= bundle["high_risk_cutoff"]:
+        if score >= high_cutoff:
             level = "High"
         elif score >= bundle["threshold"]:
             level = "Elevated"
         else:
             level = "Low"
         order = contrib[i].argsort()[::-1][:3]
+        row = X.iloc[i]
         factors = [
-            {"feature": X.columns[j], "value": float(X.iloc[i, j]), "contribution": round(float(contrib[i, j]), 3)}
-            for j in order if contrib[i, j] >= MIN_FACTOR_IMPACT
+            {"feature": X.columns[j], "value": float(row.iloc[j]), "contribution": round(float(contrib[i, j]), 3)}
+            for j in order
+            if contrib[i, j] >= MIN_FACTOR_IMPACT and not pd.isna(row.iloc[j])
         ]
+        missing_i = [c for c in X.columns if pd.isna(row[c])]
         results.append({
             "risk_score": round(float(score), 4),
             "risk_percent": f"{score:.1%}",
@@ -110,7 +128,10 @@ def predict_risk(patient_data, model_path: str | Path = MODEL_PATH):
             "screening_threshold": round(bundle["threshold"], 4),
             "recommendation": RECOMMENDATIONS[level],
             "top_risk_factors": factors,
-            "disclaimer": DISCLAIMER,
+            "missing_features": missing_i,
+            "partial_input": bool(missing_i),
+            "disclaimer": DISCLAIMER + (" Partial input: survey fields missing, see missing_features."
+                                        if missing_i else ""),
         })
     return results[0] if isinstance(patient_data, Mapping) else results
 

@@ -1,0 +1,19 @@
+{
+  "name": "diabetes-risk-model",
+  "version": "2.0.0-missing-robust",
+  "demo": false,
+  "model_path": "../../../artifacts/diabetes_risk_model.joblib",
+  "feature_order": ["Glucose", "HbA1c", "Total Cholesterol"],
+  "feature_mapping": {
+    "Glucose": "Glucose",
+    "HbA1c": "HbA1c",
+    "Total Cholesterol": "Total Cholesterol"
+  },
+  "expected_units": {
+    "Glucose": "mg/dL",
+    "HbA1c": "%",
+    "Total Cholesterol": "mg/dL"
+  },
+  "fill_values": {},
+  "labels": {"Low": "Low risk", "Elevated": "Elevated risk", "High": "High risk"}
+}

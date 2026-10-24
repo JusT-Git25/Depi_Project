@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from pathlib import Path
 from ucimlrepo import fetch_ucirepo
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import (
@@ -54,6 +55,8 @@ best_f1 = f1_scores[best_f1_idx]
 
 # Clinical screening threshold: Target >= 80% Recall with highest possible Precision
 clinical_indices = np.where(recalls[:-1] >= 0.80)[0]
+if len(clinical_indices) == 0:
+    raise ValueError("No threshold reaches 80% recall; cannot pick a clinical threshold.")
 clinical_idx = clinical_indices[-1]
 clinical_thresh = thresholds[clinical_idx]
 
@@ -65,9 +68,10 @@ for name, thresh in [("Default (0.50)", 0.50),
                      ("High Sensitivity Clinical (>=80% Recall)", clinical_thresh)]:
     y_pred = (y_proba >= thresh).astype(int)
     rep = classification_report(y_test, y_pred, output_dict=True)
-    rec = rep["1.0"]["recall"] if "1.0" in rep else rep["1"]["recall"]
-    prec = rep["1.0"]["precision"] if "1.0" in rep else rep["1"]["precision"]
-    f1 = rep["1.0"]["f1-score"] if "1.0" in rep else rep["1"]["f1-score"]
+    pos_key = "1.0" if "1.0" in rep else "1"
+    rec = rep[pos_key]["recall"]
+    prec = rep[pos_key]["precision"]
+    f1 = rep[pos_key]["f1-score"]
     acc = rep["accuracy"]
     print(f"[{name}] (Threshold = {thresh:.3f})")
     print(f"   Accuracy: {acc:.4f} | Recall: {rec:.4f} | Precision: {prec:.4f} | F1: {f1:.4f}\n")
@@ -96,14 +100,19 @@ sns.heatmap(cm_clinical, annot=True, fmt="d", cmap="Blues", cbar=False, ax=axes[
 axes[1].set_title(f"Confusion Matrix (Clinical Threshold = {clinical_thresh:.2f})", fontsize=12, fontweight="bold")
 
 plt.tight_layout()
-plt.savefig("threshold_curves.png", dpi=300)
+OUT_DIR = Path(__file__).resolve().parent
+plt.savefig(OUT_DIR / "threshold_curves.png", dpi=300)
 print("Saved threshold curves plot to: threshold_curves.png")
 
 # 5. SHAP Feature Importance Analysis
 print("\nComputing SHAP values (using TreeExplainer)...")
 explainer = shap.TreeExplainer(model)
-X_sample = X_test.sample(n=5000, random_state=42)
-shap_values = explainer.shap_values(X_sample)
+X_sample = X_test.sample(n=min(5000, len(X_test)), random_state=42)
+try:
+    # New SHAP API (callable explainer) preferred; fall back to deprecated shap_values.
+    shap_values = explainer(X_sample).values
+except (TypeError, AttributeError):
+    shap_values = explainer.shap_values(X_sample)
 
 shap_vals_target = shap_values[1] if isinstance(shap_values, list) else shap_values
 
@@ -111,6 +120,6 @@ plt.figure(figsize=(10, 7))
 shap.summary_plot(shap_vals_target, X_sample, show=False)
 plt.title("SHAP Summary Plot: Feature Impact on Diabetes Risk", fontsize=13, fontweight="bold", pad=15)
 plt.tight_layout()
-plt.savefig("shap_summary.png", dpi=300)
+plt.savefig(OUT_DIR / "shap_summary.png", dpi=300)
 print("Saved SHAP summary plot to: shap_summary.png")
 print("\nAnalysis complete!")

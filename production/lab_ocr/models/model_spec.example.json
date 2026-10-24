@@ -1,0 +1,19 @@
+{
+  "name": "patient-risk-model",
+  "version": "1.0.0",
+  "demo": false,
+  "model_path": "your_model.joblib",
+  "feature_order": ["glucose", "hba1c", "creatinine"],
+  "feature_mapping": {
+    "Glucose": "glucose",
+    "HbA1c": "hba1c",
+    "Creatinine": "creatinine"
+  },
+  "expected_units": {
+    "glucose": "mg/dL",
+    "hba1c": "%",
+    "creatinine": "mg/dL"
+  },
+  "fill_values": {},
+  "labels": {"0": "Class 0 name", "1": "Class 1 name"}
+}

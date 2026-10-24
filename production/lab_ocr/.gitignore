@@ -1,0 +1,12 @@
+.venv/
+venv/
+__pycache__/
+.pytest_cache/
+.coverage
+.env
+*.pdf
+*.png
+*.jpg
+*.jpeg
+*.joblib
+models/demo_spec.json

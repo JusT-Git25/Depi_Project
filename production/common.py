@@ -6,7 +6,8 @@ so there are exactly two places to touch when the rest of the team's work lands:
     * LGBM_PARAMS          -> paste the best Optuna / RandomizedSearchCV params
     * engineer_features()  -> add the engineered columns
 
-After changing either one, re-run `python calibration.py` and `python train_final.py`.
+After changing either one, re-run `python -m experiments.calibration` and
+`python -m production.train_final` from the repo root.
 """
 from __future__ import annotations
 
@@ -25,9 +26,10 @@ from sklearn.metrics import (
 )
 from sklearn.model_selection import StratifiedKFold, train_test_split
 
-ROOT = Path(__file__).resolve().parent
-CSV_PATH = ROOT / "diabetes_data.csv"
-ARTIFACT_DIR = ROOT / "artifacts"
+ROOT = Path(__file__).resolve().parent          # production/
+REPO_ROOT = ROOT.parent                            # repo root (data + artifacts live here)
+CSV_PATH = REPO_ROOT / "diabetes_data.csv"
+ARTIFACT_DIR = REPO_ROOT / "artifacts"
 MODEL_PATH = ARTIFACT_DIR / "diabetes_risk_model.joblib"
 
 RANDOM_STATE = 42
@@ -54,6 +56,42 @@ def engineer_features(df: pd.DataFrame) -> pd.DataFrame:
     reaches the packaged model automatically. Currently a no-op.
     """
     return df
+
+
+# Features typically present in lab OCR output (via lab_adapter). Everything else
+# is survey/lifestyle/history and is often missing at lab-inference time.
+LAB_MAPPABLE = ["HighBP", "HighChol", "CholCheck", "BMI", "Smoker", "Sex", "Age"]
+SURVEY_ONLY = ["Stroke", "HeartDiseaseorAttack", "PhysActivity", "Fruits", "Veggies",
+               "HvyAlcoholConsump", "AnyHealthcare", "NoDocbcCost", "GenHlth",
+               "MentHlth", "PhysHlth", "DiffWalk", "Education", "Income"]
+
+# Missingness augmentation rates used to make the model robust to lab-partial input.
+MASK_SURVEY_RATE = 0.60   # P(mask each survey-only field in an augmented copy)
+MASK_MAPPABLE_RATE = 0.10  # P(mask each lab-mappable field (simulates absent panel item)
+
+
+def apply_lab_missingness(X: pd.DataFrame, seed: int = 0,
+                          survey_rate: float = MASK_SURVEY_RATE,
+                          mappable_rate: float = MASK_MAPPABLE_RATE) -> pd.DataFrame:
+    """Return a copy of X with random NaNs injected to mimic lab-partial input.
+
+    Survey-only columns are masked aggressively, lab-mappable ones rarely.
+    LightGBM handles NaN natively, so no imputation is needed.
+    """
+    rng = np.random.default_rng(seed)
+    Xm = X.copy()
+    for col in X.columns:
+        rate = survey_rate if col in SURVEY_ONLY else mappable_rate if col in LAB_MAPPABLE else 0.0
+        if rate > 0:
+            Xm.loc[rng.random(len(Xm)) < rate, col] = np.nan
+    return Xm
+
+
+def labs_only_frame(X: pd.DataFrame) -> pd.DataFrame:
+    """Worst-case lab input: keep only lab-mappable columns, mask the rest."""
+    Xm = X.copy()
+    Xm[SURVEY_ONLY] = np.nan
+    return Xm
 
 
 # --------------------------------------------------------------------------- data
@@ -144,7 +182,9 @@ def select_method(p_raw: np.ndarray, y: np.ndarray, methods=("sigmoid", "isotoni
 # -------------------------------------------------------------------- metrics
 def expected_calibration_error(y: np.ndarray, p: np.ndarray, n_bins: int = 15) -> float:
     """Weighted average gap between predicted probability and observed rate per bin."""
-    bins = np.clip((np.asarray(p) * n_bins).astype(int), 0, n_bins - 1)
+    y = np.asarray(y, dtype=float)
+    p = np.asarray(p, dtype=float)
+    bins = np.clip((p * n_bins).astype(int), 0, n_bins - 1)
     ece = 0.0
     for b in range(n_bins):
         mask = bins == b
@@ -169,23 +209,28 @@ def pick_clinical_threshold(y: np.ndarray, p: np.ndarray, target_recall: float =
     """Highest threshold (so best precision) that still reaches the target recall."""
     _, recalls, thresholds = precision_recall_curve(y, p)
     ok = np.where(recalls[:-1] >= target_recall)[0]
+    if len(ok) == 0:
+        # Target recall unreachable: fall back to the lowest threshold (max recall).
+        return float(thresholds[0])
     return float(thresholds[ok[-1]])
 
 
 def threshold_report(y: np.ndarray, p: np.ndarray, threshold: float) -> dict:
-    pred = p >= threshold
+    pred = np.asarray(p) >= threshold
+    y = np.asarray(y)
     tp = int(np.sum(pred & (y == 1)))
     fp = int(np.sum(pred & (y == 0)))
     fn = int(np.sum(~pred & (y == 1)))
     tn = int(np.sum(~pred & (y == 0)))
-    recall = tp / (tp + fn)
+    recall = tp / (tp + fn) if (tp + fn) else 0.0
     precision = tp / (tp + fp) if (tp + fp) else 0.0
+    specificity = tn / (tn + fp) if (tn + fp) else 0.0
     return {
         "Threshold": threshold,
         "Recall": recall,
         "Precision": precision,
-        "Specificity": tn / (tn + fp),
+        "Specificity": specificity,
         "F1": 2 * precision * recall / (precision + recall) if (precision + recall) else 0.0,
-        "FlaggedShare": float(pred.mean()),
+        "FlaggedShare": float(np.mean(pred)) if len(pred) else 0.0,
         "TP": tp, "FP": fp, "FN": fn, "TN": tn,
     }

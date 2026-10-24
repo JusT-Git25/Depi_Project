@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lab Report Analyzer</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<main>
+  <h1>Lab report analyzer</h1>
+  <p class="notice" role="note">OCR can misread medical values. Check every value against your original report.
+    Predictions are statistical estimates, not a diagnosis.</p>
+  <div id="demo-banner" class="banner danger" hidden>DEMO MODEL: trained on made-up data. Its output means nothing medically.</div>
+  <div id="model-banner" class="banner" hidden></div>
+
+  <section aria-labelledby="s1">
+    <h2 id="s1">1. Upload your lab report</h2>
+    <label class="drop" id="drop">
+      <input type="file" id="file" accept=".pdf,.png,.jpg,.jpeg,.tif,.tiff,.bmp,.webp">
+      <span id="file-label">Choose a PDF or image, or drop it here</span>
+    </label>
+    <button id="process" class="primary" disabled>Read my report</button>
+    <p id="status" role="status"></p>
+  </section>
+
+  <section id="review" aria-labelledby="s2" hidden>
+    <h2 id="s2">2. Check the values</h2>
+    <p class="hint">Fix anything the OCR got wrong. Use the standard test names from the suggestions so the model can find them.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Test</th><th>Value</th><th>Unit</th><th>Reference</th><th>Status</th><th></th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <datalist id="known-tests"></datalist>
+    <button id="add-row">Add a row</button>
+    <ul id="warnings" class="warnings"></ul>
+
+    <label class="confirm"><input type="checkbox" id="confirm"> I checked these values against my original report</label>
+    <div class="actions">
+      <button id="predict" class="primary" disabled>Predict</button>
+      <button id="dl-json">Download JSON</button>
+      <button id="dl-csv">Download CSV</button>
+      <button id="discard" class="danger-btn">Discard everything</button>
+    </div>
+  </section>
+
+  <section id="prediction" aria-labelledby="s3" hidden>
+    <h2 id="s3">3. Result</h2>
+    <div id="pred-body"></div>
+  </section>
+</main>
+<script src="/static/app.js"></script>
+</body>
+</html>

@@ -61,12 +61,13 @@ for name, model in booster_models.items():
     y_proba = model.predict_proba(X_test)[:, 1]
     
     report = classification_report(y_test, y_pred, output_dict=True)
+    pos_key = "1.0" if "1.0" in report else "1"
     results.append({
         "Model": name,
         "Accuracy": report["accuracy"],
-        "Recall (Diabetic)": report["1.0"]["recall"] if "1.0" in report else report["1"]["recall"],
-        "Precision (Diabetic)": report["1.0"]["precision"] if "1.0" in report else report["1"]["precision"],
-        "F1 (Diabetic)": report["1.0"]["f1-score"] if "1.0" in report else report["1"]["f1-score"],
+        "Recall (Diabetic)": report[pos_key]["recall"],
+        "Precision (Diabetic)": report[pos_key]["precision"],
+        "F1 (Diabetic)": report[pos_key]["f1-score"],
         "ROC-AUC": roc_auc_score(y_test, y_proba),
         "PR-AUC": average_precision_score(y_test, y_proba)
     })

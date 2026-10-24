@@ -13,6 +13,8 @@ Handles:
 
 Glucose / HbA1c have NO slot in the current 21-feature CDC model, so they are
 surfaced in `lab_signals` with a warning instead of being silently dropped.
+
+For the full OCR -> prediction -> advice flow see `production.pipeline`.
 """
 from __future__ import annotations
 
@@ -20,6 +22,13 @@ import difflib
 import math
 import re
 from typing import Any
+
+from production.clinical_rules import (
+    evaluate_glycemic_signals,
+    ifcc_to_ngsp,
+    is_plausible,
+    BOUNDS,
+)
 
 CDC_FEATURES = [
     "HighBP", "HighChol", "CholCheck", "BMI", "Smoker", "Stroke",
@@ -55,8 +64,11 @@ ALIASES: dict[str, list[str]] = {
     "ldl": ["ldl", "ldl cholesterol", "ldl c", "low density lipoprotein",
             "ldl calculated"],
     "triglycerides": ["triglycerides", "triglyceride", "trig", "tg"],
-    "glucose": ["glucose", "blood glucose", "fasting glucose", "fbs",
-                "random glucose", "rbs", "blood sugar", "fasting blood sugar"],
+    "glucose_fasting": ["fasting glucose", "fbs", "fasting blood glucose", "fasting blood sugar",
+                        "fasting blood sugar fbs", "fbg", "glucose fasting", "serum fasting glucose"],
+    "glucose_random": ["random glucose", "rbs", "random blood glucose", "random blood sugar",
+                       "casual glucose", "postprandial glucose", "ppbs", "2h pp", "glucose random"],
+    "glucose": ["glucose", "blood glucose", "blood sugar", "serum glucose", "plasma glucose"],
     "hba1c": ["hba1c", "hb a1c", "a1c", "glycated hemoglobin", "glycosylated hemoglobin",
               "hemoglobin a1c"],
     "weight": ["weight", "wt", "body weight", "weight kg", "weight lbs"],
@@ -197,14 +209,23 @@ def normalize_labs(lab_json: Any) -> dict:
                 canon[c] = parsed
                 prov[c] = f"from '{raw_name}'"
             continue
-        num,ublob = _parse_value(raw_val)
+        num, ublob = _parse_value(raw_val)
         if num is None:
             unknown.append(str(raw_name))
             continue
         if c in {"total_chol", "hdl", "ldl", "triglycerides"}:
             num = _to_mg_dl(num, ublob, "chol")
-        elif c == "glucose":
+        elif c in {"glucose", "glucose_fasting", "glucose_random"}:
             num = _to_mg_dl(num, ublob, "gluc")
+        elif c == "hba1c":
+            u_lower = ublob.lower()
+            is_pct = "%" in u_lower or "pct" in u_lower or "percent" in u_lower
+            if "mmol" in u_lower or (num > 20.0 and not is_pct):
+                old_val = num
+                num = round(ifcc_to_ngsp(num), 1)
+                prov[c] = f"from '{raw_name}' (converted {old_val:g} mmol/mol IFCC -> {num}% NGSP)"
+                canon[c] = num
+                continue
         canon[c] = num
         prov[c] = f"from '{raw_name}'{' (fuzzy)' if fuzzy else ''}"
     # height/weight unit normalization: detect lbs / cm / ft-in from provenance blob
@@ -283,45 +304,33 @@ def labs_to_cdc(lab_json: Any) -> dict:
         except (ValueError, TypeError, StopIteration):
             pass
 
-    signals = {k: c[k] for k in ("glucose", "hba1c") if k in c}
+    signals = {k: c[k] for k in ("glucose_fasting", "glucose_random", "glucose", "hba1c") if k in c}
     if signals:
         warnings.append(
             "Glucose/HbA1c extracted but NOT model inputs (CDC-21 has no glucose slot); "
-            "shown in lab_signals for the clinician, retrain needed to use them as features.")
+            "evaluated via clinical ADA rules and shown in lab_signals/clinical_assessment.")
+
+    clinical_assessment = evaluate_glycemic_signals(signals)
+    if clinical_assessment and clinical_assessment.get("warnings"):
+        warnings.extend(clinical_assessment["warnings"])
 
     filled = {k: v for k, v in cdc.items() if not math.isnan(v)}
     missing = [k for k, v in cdc.items() if math.isnan(v)]
-    return {"cdc_partial": cdc, "filled": filled, "missing": missing,
-            "lab_signals": signals, "provenance": prov,
-            "unknown_fields": norm["unknown_fields"],
-            "fuzzy_matched": norm["fuzzy_matched"], "warnings": warnings}
+    return {
+        "cdc_partial": cdc,
+        "filled": filled,
+        "missing": missing,
+        "lab_signals": signals,
+        "clinical_assessment": clinical_assessment,
+        "glycemic_alert": clinical_assessment,  # backward compatibility alias
+        "provenance": prov,
+        "unknown_fields": norm["unknown_fields"],
+        "fuzzy_matched": norm["fuzzy_matched"],
+        "warnings": warnings,
+    }
+
 
 
 def vectorize(cdc_partial: dict) -> list:
     """Ordered 21-vector (NaN where missing) ready for a NaN-tolerant model."""
     return [float(cdc_partial.get(f, float("nan"))) for f in CDC_FEATURES]
-
-
-def predict_from_labs(lab_json: Any, model_path=None):
-    """End-to-end: OCR JSON -> CDC partial -> predict_risk -> enriched result.
-
-    Returns the standard predict_risk dict plus lab pipeline metadata:
-    lab_signals (glucose/HbA1c), provenance, unknown_fields, fuzzy_matched,
-    warnings, missing_features. Requires a missing-robust bundle
-    (train_final.py sets missing_robust=True); warns otherwise.
-    """
-    from production.predict import load_model, predict_risk  # lazy: avoids import cycle
-
-    bundle = load_model() if model_path is None else load_model(model_path)
-    if not bundle.get("missing_robust"):
-        import warnings as _w
-        _w.warn("Model bundle predates missing-robust training; partial-input "
-                "accuracy is not guaranteed. Re-run train_final.py.")
-    adapted = labs_to_cdc(lab_json)
-    result = predict_risk(adapted["cdc_partial"])
-    result["lab_signals"] = adapted["lab_signals"]
-    result["provenance"] = adapted["provenance"]
-    result["unknown_fields"] = adapted["unknown_fields"]
-    result["fuzzy_matched"] = adapted["fuzzy_matched"]
-    result["adapter_warnings"] = adapted["warnings"]
-    return result

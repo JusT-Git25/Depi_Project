@@ -23,10 +23,20 @@ y = cdc_data.data.targets.values.ravel()
 # Check class distribution
 positive_count = np.sum(y == 1)
 negative_count = np.sum(y == 0)
-scale_pos_weight = negative_count / positive_count
 print(f"Total samples: {len(y)}")
 print(f"Non-diabetic (0): {negative_count}, Diabetic/Pre-diabetic (1): {positive_count}")
-print(f"Calculated scale_pos_weight for XGBoost: {scale_pos_weight:.2f}\n")
+print(f"Imbalance ratio (neg/pos): {negative_count / positive_count:.2f} "
+      f"(handled via class_weight='balanced')\n")
+
+
+def _positive_metrics(report: dict) -> tuple[float, float, float]:
+    """Fetch precision/recall/F1 for the positive class regardless of label dtype.
+
+    classification_report(output_dict=True) keys are str(labels), i.e. "1" for int
+    labels but "1.0" for float labels.
+    """
+    key = "1.0" if "1.0" in report else "1"
+    return report[key]["precision"], report[key]["recall"], report[key]["f1-score"]
 
 # 2. Train-Test Split (80/20 with stratification)
 X_train, X_test, y_train, y_test = train_test_split(
@@ -79,13 +89,14 @@ for name, model in models.items():
     
     # Extract report as dict
     report = classification_report(y_test, y_pred, output_dict=True)
-    
+    precision, recall, f1 = _positive_metrics(report)
+
     results.append({
         "Model": name,
         "Accuracy": report["accuracy"],
-        "Diabetic Recall": report["1.0"]["recall"] if "1.0" in report else report["1"]["recall"],
-        "Diabetic Precision": report["1.0"]["precision"] if "1.0" in report else report["1"]["precision"],
-        "Diabetic F1": report["1.0"]["f1-score"] if "1.0" in report else report["1"]["f1-score"],
+        "Diabetic Recall": recall,
+        "Diabetic Precision": precision,
+        "Diabetic F1": f1,
         "ROC-AUC": roc_auc,
         "PR-AUC": pr_auc
     })
