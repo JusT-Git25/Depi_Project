@@ -1,0 +1,31 @@
+{
+  "raw_feature_columns": [
+    "Age",
+    "Gender",
+    "TB",
+    "DB",
+    "Alkphos",
+    "Sgpt",
+    "Sgot",
+    "TP",
+    "ALB",
+    "A/G Ratio"
+  ],
+  "transformed_feature_names": [
+    "Age",
+    "TB",
+    "DB",
+    "Alkphos",
+    "Sgpt",
+    "Sgot",
+    "TP",
+    "ALB",
+    "A/G Ratio",
+    "Gender_Male"
+  ],
+  "add_clinical_ratios": false,
+  "log_transform_skewed": true,
+  "numeric_imputation": "median (fitted strictly on X_train)",
+  "categorical_encoding": "OneHotEncoder(Female/Male, drop=if_binary)",
+  "scaler": "robust"
+}

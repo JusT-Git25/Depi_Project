@@ -1,0 +1,36 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: liver-disease-api
+    ports:
+      - "8000:8000"
+    environment:
+      - LIVER_API_KEY=${LIVER_API_KEY:?Set LIVER_API_KEY in your .env file before running docker compose}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS:-http://localhost:8501,http://127.0.0.1:8501}
+      - MAX_BATCH_ROWS=${MAX_BATCH_ROWS:-5000}
+      - MODEL_ARTIFACT_PATH=/app/artifacts/models/liver_disease_pipeline.joblib
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/health"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: liver-disease-frontend
+    ports:
+      - "8501:8501"
+    environment:
+      - API_BASE_URL=http://api:8000
+      - LIVER_API_KEY=${LIVER_API_KEY:-}
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped

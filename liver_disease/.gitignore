@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment variables & secrets (NEVER commit real API keys)
+.env
+.env.*
+!.env.example
+
+# Testing & linting caches
+.pytest_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+.ruff_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Nested unrelated repository (keep isolated from this project's Git history)
+Depi_Project/
+
+# Temporary backups
+*.bak
+*.tmp
+backups/
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
+
+# Note on tracked datasets & production artifact:
+# data/raw/Indian Liver Patient Dataset (ILPD).csv (~24 KB), data/processed/ (~30 KB),
+# and artifacts/models/liver_disease_pipeline.joblib (~5.75 MB) are intentionally
+# kept versioned for reproducible tests, Docker builds, and Render deployment.
+# Migrate to Git LFS or DVC if future datasets/artifacts exceed ~25 MB.
