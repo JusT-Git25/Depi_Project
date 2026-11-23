@@ -1,0 +1,131 @@
+{
+  "raw_rows": 583,
+  "deduplicated_rows": 570,
+  "feature_statistical_tests_mann_whitney": {
+    "Age": {
+      "disease_median": 46.0,
+      "disease_iqr": 24.0,
+      "no_disease_median": 41.0,
+      "no_disease_iqr": 27.5,
+      "mann_whitney_u": 38787.0,
+      "p_value": 0.0020146760825503086,
+      "spearman_r_with_disease": 0.1295,
+      "rank_biserial_effect": -0.1651
+    },
+    "TB": {
+      "disease_median": 1.4,
+      "disease_iqr": 2.875,
+      "no_disease_median": 0.8,
+      "no_disease_iqr": 0.4,
+      "mann_whitney_u": 46662.0,
+      "p_value": 4.680861435512821e-14,
+      "spearman_r_with_disease": 0.3161,
+      "rank_biserial_effect": -0.4016
+    },
+    "DB": {
+      "disease_median": 0.5,
+      "disease_iqr": 1.6,
+      "no_disease_median": 0.2,
+      "no_disease_iqr": 0.1,
+      "mann_whitney_u": 46161.5,
+      "p_value": 1.582710043102343e-13,
+      "spearman_r_with_disease": 0.3094,
+      "rank_biserial_effect": -0.3866
+    },
+    "Alkphos": {
+      "disease_median": 229.0,
+      "disease_iqr": 133.0,
+      "no_disease_median": 186.5,
+      "no_disease_iqr": 50.0,
+      "mann_whitney_u": 44929.5,
+      "p_value": 6.23417707647223e-11,
+      "spearman_r_with_disease": 0.2741,
+      "rank_biserial_effect": -0.3496
+    },
+    "Sgpt": {
+      "disease_median": 40.5,
+      "disease_iqr": 50.75,
+      "no_disease_median": 27.0,
+      "no_disease_iqr": 17.25,
+      "mann_whitney_u": 45631.0,
+      "p_value": 4.112483430630972e-12,
+      "spearman_r_with_disease": 0.2907,
+      "rank_biserial_effect": -0.3706
+    },
+    "Sgot": {
+      "disease_median": 51.0,
+      "disease_iqr": 78.25,
+      "no_disease_median": 29.0,
+      "no_disease_iqr": 22.0,
+      "mann_whitney_u": 46474.0,
+      "p_value": 1.2992837349017206e-13,
+      "spearman_r_with_disease": 0.3105,
+      "rank_biserial_effect": -0.396
+    },
+    "TP": {
+      "disease_median": 6.6,
+      "disease_iqr": 1.475,
+      "no_disease_median": 6.65,
+      "no_disease_iqr": 1.4,
+      "mann_whitney_u": 31787.5,
+      "p_value": 0.3978894548462587,
+      "spearman_r_with_disease": -0.0355,
+      "rank_biserial_effect": 0.0452
+    },
+    "ALB": {
+      "disease_median": 3.0,
+      "disease_iqr": 1.175,
+      "no_disease_median": 3.45,
+      "no_disease_iqr": 1.1,
+      "mann_whitney_u": 25928.0,
+      "p_value": 3.46549968783394e-05,
+      "spearman_r_with_disease": -0.1736,
+      "rank_biserial_effect": 0.2212
+    },
+    "A/G Ratio": {
+      "disease_median": 0.9,
+      "disease_iqr": 0.4,
+      "no_disease_median": 1.0,
+      "no_disease_iqr": 0.3,
+      "mann_whitney_u": 24531.0,
+      "p_value": 2.822009850089095e-06,
+      "spearman_r_with_disease": -0.197,
+      "rank_biserial_effect": 0.2504
+    }
+  },
+  "gender_chi2_test": {
+    "chi2_statistic": 3.1212,
+    "p_value": 0.07727778295019577,
+    "dof": 1,
+    "disease_rate_male_pct": 73.26,
+    "disease_rate_female_pct": 65.0
+  },
+  "high_collinearity_pairs_spearman_gt_0_7": [
+    {
+      "feature_1": "TB",
+      "feature_2": "DB",
+      "spearman_r": 0.9584
+    },
+    {
+      "feature_1": "Sgpt",
+      "feature_2": "Sgot",
+      "spearman_r": 0.7719
+    },
+    {
+      "feature_1": "TP",
+      "feature_2": "ALB",
+      "spearman_r": 0.7782
+    },
+    {
+      "feature_1": "ALB",
+      "feature_2": "A/G Ratio",
+      "spearman_r": 0.7535
+    }
+  ],
+  "generated_figures": [
+    "artifacts/reports/figures/01_target_and_gender_distribution.png",
+    "artifacts/reports/figures/02_numeric_distributions_by_class.png",
+    "artifacts/reports/figures/03_boxplots_and_outliers.png",
+    "artifacts/reports/figures/04_spearman_correlation_heatmap.png"
+  ]
+}

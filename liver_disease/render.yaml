@@ -1,0 +1,35 @@
+# ==============================================================================
+# Render Deployment Blueprint — Independent FastAPI ML Service & Optional UI
+# ==============================================================================
+# Deploy by connecting this repository to Render (https://render.com).
+# Set LIVER_API_KEY in the Render dashboard environment variables (never commit secrets).
+# ==============================================================================
+services:
+  - type: web
+    name: liver-disease-prediction-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: LIVER_API_KEY
+        sync: false
+      - key: LOG_LEVEL
+        value: INFO
+      - key: MAX_BATCH_ROWS
+        value: "5000"
+      - key: CORS_ALLOWED_ORIGINS
+        value: "*"
+
+  - type: web
+    name: liver-disease-prediction-ui
+    runtime: docker
+    dockerfilePath: ./frontend/Dockerfile
+    dockerContext: ./frontend
+    plan: free
+    envVars:
+      - key: API_BASE_URL
+        sync: false
+      - key: LIVER_API_KEY
+        sync: false

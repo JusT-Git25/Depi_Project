@@ -1,0 +1,1492 @@
+{
+  "model_metadata": {
+    "artifact_format_version": "1.0",
+    "model_version": "1.0.0",
+    "model_name": "SoftVoting_ET_RF_LR",
+    "model_type": "VotingClassifier",
+    "calibration_method": "none",
+    "default_threshold": 0.5,
+    "decision_threshold": 0.57,
+    "risk_thresholds": {
+      "Low": [
+        0.0,
+        0.35
+      ],
+      "Moderate": [
+        0.35,
+        0.65
+      ],
+      "High": [
+        0.65,
+        1.01
+      ]
+    },
+    "raw_feature_columns": [
+      "Age",
+      "Gender",
+      "TB",
+      "DB",
+      "Alkphos",
+      "Sgpt",
+      "Sgot",
+      "TP",
+      "ALB",
+      "A/G Ratio"
+    ],
+    "transformed_feature_names": [
+      "Age",
+      "TB",
+      "DB",
+      "Alkphos",
+      "Sgpt",
+      "Sgot",
+      "TP",
+      "ALB",
+      "A/G Ratio",
+      "Gender_Male"
+    ],
+    "global_feature_importance": [
+      {
+        "rank": 1,
+        "feature": "DB",
+        "mean_abs_shap": 0.05043
+      },
+      {
+        "rank": 2,
+        "feature": "TB",
+        "mean_abs_shap": 0.03957
+      },
+      {
+        "rank": 3,
+        "feature": "Sgpt",
+        "mean_abs_shap": 0.03688
+      },
+      {
+        "rank": 4,
+        "feature": "Alkphos",
+        "mean_abs_shap": 0.03562
+      },
+      {
+        "rank": 5,
+        "feature": "Sgot",
+        "mean_abs_shap": 0.03044
+      },
+      {
+        "rank": 6,
+        "feature": "Age",
+        "mean_abs_shap": 0.02556
+      },
+      {
+        "rank": 7,
+        "feature": "TP",
+        "mean_abs_shap": 0.01589
+      },
+      {
+        "rank": 8,
+        "feature": "A/G Ratio",
+        "mean_abs_shap": 0.01369
+      },
+      {
+        "rank": 9,
+        "feature": "ALB",
+        "mean_abs_shap": 0.01219
+      },
+      {
+        "rank": 10,
+        "feature": "Gender_Male",
+        "mean_abs_shap": 0.00742
+      }
+    ],
+    "training_config": {
+      "random_state": 42,
+      "add_clinical_ratios": false,
+      "log_transform_skewed": true,
+      "selected_candidate": "SoftVoting_ET_RF_LR",
+      "best_params": {
+        "members": [
+          "ExtraTrees_Tuned",
+          "RandomForest_Tuned",
+          "LogisticRegression_Tuned"
+        ],
+        "weights": [
+          2,
+          1,
+          1
+        ]
+      },
+      "calibration_method": "none",
+      "default_threshold": 0.5,
+      "decision_threshold": 0.57,
+      "min_specificity_guardrail": 0.5
+    },
+    "dataset_info": {
+      "provenance": {
+        "filename": "Indian Liver Patient Dataset (ILPD).csv",
+        "path": "E:\\Ahmed\\DataScience\\PythonProjects\\Liver Disease\\Antigravity\\data\\raw\\Indian Liver Patient Dataset (ILPD).csv",
+        "size_bytes": 23817,
+        "sha256": "dbb065e6bf2b226b6d9c04f066ddc0b45173861dfb3a4df83f3710d3927ef5de",
+        "source_name": "UCI Machine Learning Repository — ILPD (Indian Liver Patient Dataset)",
+        "source_url": "https://archive.ics.uci.edu/dataset/225/ilpd+indian+liver+patient+dataset",
+        "original_creators": "Bendi Venkata Ramana, M. Surendra Prasad Babu, N. B. Venkateswarlu (2012)",
+        "geographic_origin": "North East of Andhra Pradesh, India"
+      },
+      "split_metadata": {
+        "rows_raw": 583,
+        "exact_duplicates_removed": 13,
+        "rows_deduplicated": 570,
+        "train_rows": 456,
+        "test_rows": 114,
+        "train_positive_rate": 0.7127,
+        "test_positive_rate": 0.7105,
+        "train_test_feature_overlap": 0
+      }
+    },
+    "evaluation_metrics": {
+      "cv_winner_repeated_5x3": {
+        "candidate": "SoftVoting_ET_RF_LR",
+        "best_params": {
+          "members": [
+            "ExtraTrees_Tuned",
+            "RandomForest_Tuned",
+            "LogisticRegression_Tuned"
+          ],
+          "weights": [
+            2,
+            1,
+            1
+          ]
+        },
+        "grid_best_roc_auc": 0.7417,
+        "accuracy_mean": 0.7025,
+        "accuracy_std": 0.033,
+        "balanced_accuracy_mean": 0.5867,
+        "balanced_accuracy_std": 0.0374,
+        "precision_mean": 0.7571,
+        "precision_std": 0.0196,
+        "recall_sensitivity_mean": 0.8585,
+        "recall_sensitivity_std": 0.0507,
+        "specificity_mean": 0.315,
+        "specificity_std": 0.0816,
+        "f1_score_mean": 0.8039,
+        "f1_score_std": 0.0258,
+        "roc_auc_mean": 0.7417,
+        "roc_auc_std": 0.0469,
+        "pr_auc_mean": 0.8912,
+        "pr_auc_std": 0.0213,
+        "brier_score_mean": 0.1765,
+        "brier_score_std": 0.0116,
+        "selection_score": 0.8165
+      },
+      "calibration_comparison": [
+        {
+          "calibration": "none",
+          "accuracy_mean": 0.7025,
+          "accuracy_std": 0.033,
+          "balanced_accuracy_mean": 0.5867,
+          "balanced_accuracy_std": 0.0374,
+          "precision_mean": 0.7571,
+          "precision_std": 0.0196,
+          "recall_sensitivity_mean": 0.8585,
+          "recall_sensitivity_std": 0.0507,
+          "specificity_mean": 0.315,
+          "specificity_std": 0.0816,
+          "f1_score_mean": 0.8039,
+          "f1_score_std": 0.0258,
+          "roc_auc_mean": 0.7417,
+          "roc_auc_std": 0.0469,
+          "pr_auc_mean": 0.8912,
+          "pr_auc_std": 0.0213,
+          "brier_score_mean": 0.1765,
+          "brier_score_std": 0.0116
+        },
+        {
+          "calibration": "sigmoid",
+          "accuracy_mean": 0.7083,
+          "accuracy_std": 0.0291,
+          "balanced_accuracy_mean": 0.5395,
+          "balanced_accuracy_std": 0.0312,
+          "precision_mean": 0.7305,
+          "precision_std": 0.014,
+          "recall_sensitivity_mean": 0.9364,
+          "recall_sensitivity_std": 0.0442,
+          "specificity_mean": 0.1425,
+          "specificity_std": 0.0631,
+          "f1_score_mean": 0.8203,
+          "f1_score_std": 0.0209,
+          "roc_auc_mean": 0.7418,
+          "roc_auc_std": 0.0462,
+          "pr_auc_mean": 0.8913,
+          "pr_auc_std": 0.0214,
+          "brier_score_mean": 0.1783,
+          "brier_score_std": 0.0093
+        },
+        {
+          "calibration": "isotonic",
+          "accuracy_mean": 0.6981,
+          "accuracy_std": 0.033,
+          "balanced_accuracy_mean": 0.5505,
+          "balanced_accuracy_std": 0.0385,
+          "precision_mean": 0.737,
+          "precision_std": 0.0188,
+          "recall_sensitivity_mean": 0.8974,
+          "recall_sensitivity_std": 0.0563,
+          "specificity_mean": 0.2036,
+          "specificity_std": 0.0917,
+          "f1_score_mean": 0.8085,
+          "f1_score_std": 0.0251,
+          "roc_auc_mean": 0.7363,
+          "roc_auc_std": 0.0498,
+          "pr_auc_mean": 0.8853,
+          "pr_auc_std": 0.0239,
+          "brier_score_mean": 0.1791,
+          "brier_score_std": 0.0129
+        }
+      ],
+      "selected_calibration": "none",
+      "oof_threshold_optimization": {
+        "selected_threshold": 0.57,
+        "default_threshold": 0.5,
+        "selection_rule": "max_screening_utility_with_specificity_ge_0.50",
+        "min_specificity_constraint": 0.5,
+        "selected_oof_metrics": {
+          "threshold": 0.57,
+          "recall_sensitivity": 0.76,
+          "specificity": 0.5038,
+          "precision": 0.7917,
+          "f1_score": 0.7755,
+          "balanced_accuracy": 0.6319,
+          "fn": 78,
+          "fp": 65,
+          "utility": 0.7677
+        },
+        "default_oof_metrics": {
+          "threshold": 0.5,
+          "accuracy": 0.7083,
+          "balanced_accuracy": 0.5858,
+          "precision": 0.7553,
+          "recall_sensitivity": 0.8738,
+          "specificity": 0.2977,
+          "npv": 0.4875,
+          "f1_score": 0.8103,
+          "f2_score": 0.8473,
+          "roc_auc": 0.7386,
+          "pr_auc": 0.8886,
+          "brier_score": 0.177,
+          "confusion_matrix": {
+            "tn": 39,
+            "fp": 92,
+            "fn": 41,
+            "tp": 284
+          },
+          "classification_report": {
+            "No Liver Disease (2)": {
+              "precision": 0.4875,
+              "recall": 0.29770992366412213,
+              "f1-score": 0.3696682464454976,
+              "support": 131.0
+            },
+            "Liver Disease (1)": {
+              "precision": 0.7553191489361702,
+              "recall": 0.8738461538461538,
+              "f1-score": 0.8102710413694721,
+              "support": 325.0
+            },
+            "accuracy": 0.7083333333333334,
+            "macro avg": {
+              "precision": 0.6214095744680851,
+              "recall": 0.585778038755138,
+              "f1-score": 0.5899696439074849,
+              "support": 456.0
+            },
+            "weighted avg": {
+              "precision": 0.6783798758865249,
+              "recall": 0.7083333333333334,
+              "f1-score": 0.6836943612487689,
+              "support": 456.0
+            }
+          }
+        }
+      },
+      "holdout_test_default_threshold_0_50": {
+        "threshold": 0.5,
+        "accuracy": 0.7368,
+        "balanced_accuracy": 0.5993,
+        "precision": 0.7576,
+        "recall_sensitivity": 0.9259,
+        "specificity": 0.2727,
+        "npv": 0.6,
+        "f1_score": 0.8333,
+        "f2_score": 0.8865,
+        "roc_auc": 0.8066,
+        "pr_auc": 0.9233,
+        "brier_score": 0.1571,
+        "confusion_matrix": {
+          "tn": 9,
+          "fp": 24,
+          "fn": 6,
+          "tp": 75
+        },
+        "classification_report": {
+          "No Liver Disease (2)": {
+            "precision": 0.6,
+            "recall": 0.2727272727272727,
+            "f1-score": 0.375,
+            "support": 33.0
+          },
+          "Liver Disease (1)": {
+            "precision": 0.7575757575757576,
+            "recall": 0.9259259259259259,
+            "f1-score": 0.8333333333333334,
+            "support": 81.0
+          },
+          "accuracy": 0.7368421052631579,
+          "macro avg": {
+            "precision": 0.6787878787878787,
+            "recall": 0.5993265993265993,
+            "f1-score": 0.6041666666666667,
+            "support": 114.0
+          },
+          "weighted avg": {
+            "precision": 0.7119617224880382,
+            "recall": 0.7368421052631579,
+            "f1-score": 0.7006578947368421,
+            "support": 114.0
+          }
+        }
+      },
+      "holdout_test_selected_threshold": {
+        "threshold": 0.57,
+        "accuracy": 0.7281,
+        "balanced_accuracy": 0.665,
+        "precision": 0.8049,
+        "recall_sensitivity": 0.8148,
+        "specificity": 0.5152,
+        "npv": 0.5312,
+        "f1_score": 0.8098,
+        "f2_score": 0.8128,
+        "roc_auc": 0.8066,
+        "pr_auc": 0.9233,
+        "brier_score": 0.1571,
+        "confusion_matrix": {
+          "tn": 17,
+          "fp": 16,
+          "fn": 15,
+          "tp": 66
+        },
+        "classification_report": {
+          "No Liver Disease (2)": {
+            "precision": 0.53125,
+            "recall": 0.5151515151515151,
+            "f1-score": 0.5230769230769231,
+            "support": 33.0
+          },
+          "Liver Disease (1)": {
+            "precision": 0.8048780487804879,
+            "recall": 0.8148148148148148,
+            "f1-score": 0.8098159509202454,
+            "support": 81.0
+          },
+          "accuracy": 0.7280701754385965,
+          "macro avg": {
+            "precision": 0.6680640243902439,
+            "recall": 0.664983164983165,
+            "f1-score": 0.6664464369985843,
+            "support": 114.0
+          },
+          "weighted avg": {
+            "precision": 0.7256699293966624,
+            "recall": 0.7280701754385965,
+            "f1-score": 0.7268125481234943,
+            "support": 114.0
+          }
+        }
+      },
+      "holdout_test_bootstrap_95_ci": {
+        "roc_auc": {
+          "mean": 0.8065,
+          "ci_lower": 0.7233,
+          "ci_upper": 0.8798,
+          "confidence_level": 0.95,
+          "n_valid_bootstraps": 1000
+        },
+        "pr_auc": {
+          "mean": 0.9231,
+          "ci_lower": 0.8769,
+          "ci_upper": 0.9582,
+          "confidence_level": 0.95,
+          "n_valid_bootstraps": 1000
+        },
+        "accuracy": {
+          "mean": 0.7277,
+          "ci_lower": 0.6404,
+          "ci_upper": 0.807,
+          "confidence_level": 0.95,
+          "n_valid_bootstraps": 1000
+        },
+        "balanced_accuracy": {
+          "mean": 0.6645,
+          "ci_lower": 0.5654,
+          "ci_upper": 0.7567,
+          "confidence_level": 0.95,
+          "n_valid_bootstraps": 1000
+        },
+        "precision": {
+          "mean": 0.8034,
+          "ci_lower": 0.7142,
+          "ci_upper": 0.8824,
+          "confidence_level": 0.95,
+          "n_valid_bootstraps": 1000
+        },
+        "recall_sensitivity": {
+          "mean": 0.8159,
+          "ci_lower": 0.7284,
+          "ci_upper": 0.9024,
+          "confidence_level": 0.95,
+          "n_valid_bootstraps": 1000
+        },
+        "specificity": {
+          "mean": 0.5132,
+          "ci_lower": 0.3427,
+          "ci_upper": 0.6897,
+          "confidence_level": 0.95,
+          "n_valid_bootstraps": 1000
+        },
+        "f1_score": {
+          "mean": 0.8086,
+          "ci_lower": 0.7403,
+          "ci_upper": 0.8715,
+          "confidence_level": 0.95,
+          "n_valid_bootstraps": 1000
+        }
+      }
+    },
+    "trained_at_utc": "2026-11-23T00:00:55.548716+00:00",
+    "dependency_versions": {
+      "python": "3.12.13",
+      "platform": "Windows-11-10.0.26300-SP0",
+      "numpy": "2.5.5",
+      "pandas": "2.3.3",
+      "scipy": "1.18.1",
+      "scikit-learn": "1.9.1",
+      "imbalanced-learn": "0.14.2",
+      "xgboost": "3.4.1",
+      "lightgbm": "4.7.0",
+      "catboost": "1.2.10",
+      "shap": "0.54.1",
+      "joblib": "1.6.0",
+      "fastapi": "0.165.0",
+      "pydantic": "2.14.4"
+    },
+    "artifact_path": "E:\\Ahmed\\DataScience\\PythonProjects\\Liver Disease\\Antigravity\\artifacts\\models\\liver_disease_pipeline.joblib",
+    "artifact_size_bytes": 5749315,
+    "explainer_type": "KernelExplainer",
+    "figures": {
+      "roc_pr_curves": "E:\\Ahmed\\DataScience\\PythonProjects\\Liver Disease\\Antigravity\\artifacts\\reports\\figures\\final_test_roc_pr_curves.png",
+      "confusion_matrices": "E:\\Ahmed\\DataScience\\PythonProjects\\Liver Disease\\Antigravity\\artifacts\\reports\\figures\\final_test_confusion_matrices.png",
+      "calibration_curve": "E:\\Ahmed\\DataScience\\PythonProjects\\Liver Disease\\Antigravity\\artifacts\\reports\\figures\\final_test_calibration_curve.png",
+      "beeswarm": "E:\\Ahmed\\DataScience\\PythonProjects\\Liver Disease\\Antigravity\\artifacts\\reports\\figures\\shap_summary_beeswarm.png",
+      "bar": "E:\\Ahmed\\DataScience\\PythonProjects\\Liver Disease\\Antigravity\\artifacts\\reports\\figures\\shap_global_importance_bar.png"
+    }
+  },
+  "tuned_candidates_comparison": [
+    {
+      "candidate": "ExtraTrees_Tuned",
+      "best_params": {
+        "class_weight": "balanced",
+        "max_depth": 14,
+        "max_features": "sqrt",
+        "min_samples_leaf": 1,
+        "n_estimators": 300
+      },
+      "grid_best_roc_auc": 0.7352,
+      "accuracy_mean": 0.7141,
+      "accuracy_std": 0.046,
+      "balanced_accuracy_mean": 0.6298,
+      "balanced_accuracy_std": 0.0506,
+      "precision_mean": 0.7839,
+      "precision_std": 0.0283,
+      "recall_sensitivity_mean": 0.8277,
+      "recall_sensitivity_std": 0.0602,
+      "specificity_mean": 0.4319,
+      "specificity_std": 0.093,
+      "f1_score_mean": 0.8042,
+      "f1_score_std": 0.036,
+      "roc_auc_mean": 0.7408,
+      "roc_auc_std": 0.0502,
+      "pr_auc_mean": 0.8908,
+      "pr_auc_std": 0.0198,
+      "brier_score_mean": 0.1797,
+      "brier_score_std": 0.0149,
+      "selection_score": 0.8158
+    },
+    {
+      "candidate": "RandomForest_Tuned",
+      "best_params": {
+        "class_weight": null,
+        "max_depth": null,
+        "max_features": "sqrt",
+        "min_samples_leaf": 2,
+        "n_estimators": 500
+      },
+      "grid_best_roc_auc": 0.7239,
+      "accuracy_mean": 0.69,
+      "accuracy_std": 0.0388,
+      "balanced_accuracy_mean": 0.5575,
+      "balanced_accuracy_std": 0.0431,
+      "precision_mean": 0.741,
+      "precision_std": 0.0206,
+      "recall_sensitivity_mean": 0.8687,
+      "recall_sensitivity_std": 0.0438,
+      "specificity_mean": 0.2464,
+      "specificity_std": 0.0683,
+      "f1_score_mean": 0.7995,
+      "f1_score_std": 0.0275,
+      "roc_auc_mean": 0.7228,
+      "roc_auc_std": 0.0423,
+      "pr_auc_mean": 0.8809,
+      "pr_auc_std": 0.0228,
+      "brier_score_mean": 0.182,
+      "brier_score_std": 0.0109,
+      "selection_score": 0.8018
+    },
+    {
+      "candidate": "LogisticRegression_Tuned",
+      "best_params": {
+        "C": 0.05,
+        "class_weight": null
+      },
+      "grid_best_roc_auc": 0.7276,
+      "accuracy_mean": 0.7069,
+      "accuracy_std": 0.0186,
+      "balanced_accuracy_mean": 0.5233,
+      "balanced_accuracy_std": 0.0208,
+      "precision_mean": 0.723,
+      "precision_std": 0.0103,
+      "recall_sensitivity_mean": 0.9549,
+      "recall_sensitivity_std": 0.0305,
+      "specificity_mean": 0.0916,
+      "specificity_std": 0.0517,
+      "f1_score_mean": 0.8227,
+      "f1_score_std": 0.0133,
+      "roc_auc_mean": 0.7328,
+      "roc_auc_std": 0.0473,
+      "pr_auc_mean": 0.883,
+      "pr_auc_std": 0.0263,
+      "brier_score_mean": 0.1774,
+      "brier_score_std": 0.0086,
+      "selection_score": 0.8079
+    },
+    {
+      "candidate": "CatBoost_Tuned",
+      "best_params": {
+        "auto_class_weights": "Balanced",
+        "depth": 5,
+        "iterations": 200,
+        "l2_leaf_reg": 3.0,
+        "learning_rate": 0.02
+      },
+      "grid_best_roc_auc": 0.7225,
+      "accuracy_mean": 0.663,
+      "accuracy_std": 0.0453,
+      "balanced_accuracy_mean": 0.6762,
+      "balanced_accuracy_std": 0.0545,
+      "precision_mean": 0.8476,
+      "precision_std": 0.0455,
+      "recall_sensitivity_mean": 0.6451,
+      "recall_sensitivity_std": 0.058,
+      "specificity_mean": 0.7072,
+      "specificity_std": 0.107,
+      "f1_score_mean": 0.7308,
+      "f1_score_std": 0.0421,
+      "roc_auc_mean": 0.7289,
+      "roc_auc_std": 0.0468,
+      "pr_auc_mean": 0.8807,
+      "pr_auc_std": 0.0256,
+      "brier_score_mean": 0.2007,
+      "brier_score_std": 0.0194,
+      "selection_score": 0.8048
+    },
+    {
+      "candidate": "SoftVoting_ET_RF_LR",
+      "best_params": {
+        "members": [
+          "ExtraTrees_Tuned",
+          "RandomForest_Tuned",
+          "LogisticRegression_Tuned"
+        ],
+        "weights": [
+          2,
+          1,
+          1
+        ]
+      },
+      "grid_best_roc_auc": 0.7417,
+      "accuracy_mean": 0.7025,
+      "accuracy_std": 0.033,
+      "balanced_accuracy_mean": 0.5867,
+      "balanced_accuracy_std": 0.0374,
+      "precision_mean": 0.7571,
+      "precision_std": 0.0196,
+      "recall_sensitivity_mean": 0.8585,
+      "recall_sensitivity_std": 0.0507,
+      "specificity_mean": 0.315,
+      "specificity_std": 0.0816,
+      "f1_score_mean": 0.8039,
+      "f1_score_std": 0.0258,
+      "roc_auc_mean": 0.7417,
+      "roc_auc_std": 0.0469,
+      "pr_auc_mean": 0.8912,
+      "pr_auc_std": 0.0213,
+      "brier_score_mean": 0.1765,
+      "brier_score_std": 0.0116,
+      "selection_score": 0.8165
+    }
+  ],
+  "threshold_optimization_full": {
+    "selected_threshold": 0.57,
+    "default_threshold": 0.5,
+    "selection_rule": "max_screening_utility_with_specificity_ge_0.50",
+    "min_specificity_constraint": 0.5,
+    "selected_oof_metrics": {
+      "threshold": 0.57,
+      "recall_sensitivity": 0.76,
+      "specificity": 0.5038,
+      "precision": 0.7917,
+      "f1_score": 0.7755,
+      "balanced_accuracy": 0.6319,
+      "fn": 78,
+      "fp": 65,
+      "utility": 0.7677
+    },
+    "default_oof_metrics": {
+      "threshold": 0.5,
+      "accuracy": 0.7083,
+      "balanced_accuracy": 0.5858,
+      "precision": 0.7553,
+      "recall_sensitivity": 0.8738,
+      "specificity": 0.2977,
+      "npv": 0.4875,
+      "f1_score": 0.8103,
+      "f2_score": 0.8473,
+      "roc_auc": 0.7386,
+      "pr_auc": 0.8886,
+      "brier_score": 0.177,
+      "confusion_matrix": {
+        "tn": 39,
+        "fp": 92,
+        "fn": 41,
+        "tp": 284
+      },
+      "classification_report": {
+        "No Liver Disease (2)": {
+          "precision": 0.4875,
+          "recall": 0.29770992366412213,
+          "f1-score": 0.3696682464454976,
+          "support": 131.0
+        },
+        "Liver Disease (1)": {
+          "precision": 0.7553191489361702,
+          "recall": 0.8738461538461538,
+          "f1-score": 0.8102710413694721,
+          "support": 325.0
+        },
+        "accuracy": 0.7083333333333334,
+        "macro avg": {
+          "precision": 0.6214095744680851,
+          "recall": 0.585778038755138,
+          "f1-score": 0.5899696439074849,
+          "support": 456.0
+        },
+        "weighted avg": {
+          "precision": 0.6783798758865249,
+          "recall": 0.7083333333333334,
+          "f1-score": 0.6836943612487689,
+          "support": 456.0
+        }
+      }
+    },
+    "threshold_sweep": [
+      {
+        "threshold": 0.15,
+        "recall_sensitivity": 1.0,
+        "specificity": 0.0,
+        "precision": 0.7127,
+        "f1_score": 0.8323,
+        "balanced_accuracy": 0.5,
+        "fn": 0,
+        "fp": 131,
+        "utility": 0.9162
+      },
+      {
+        "threshold": 0.16,
+        "recall_sensitivity": 1.0,
+        "specificity": 0.0,
+        "precision": 0.7127,
+        "f1_score": 0.8323,
+        "balanced_accuracy": 0.5,
+        "fn": 0,
+        "fp": 131,
+        "utility": 0.9162
+      },
+      {
+        "threshold": 0.17,
+        "recall_sensitivity": 1.0,
+        "specificity": 0.0,
+        "precision": 0.7127,
+        "f1_score": 0.8323,
+        "balanced_accuracy": 0.5,
+        "fn": 0,
+        "fp": 131,
+        "utility": 0.9162
+      },
+      {
+        "threshold": 0.18,
+        "recall_sensitivity": 1.0,
+        "specificity": 0.0,
+        "precision": 0.7127,
+        "f1_score": 0.8323,
+        "balanced_accuracy": 0.5,
+        "fn": 0,
+        "fp": 131,
+        "utility": 0.9162
+      },
+      {
+        "threshold": 0.19,
+        "recall_sensitivity": 1.0,
+        "specificity": 0.0,
+        "precision": 0.7127,
+        "f1_score": 0.8323,
+        "balanced_accuracy": 0.5,
+        "fn": 0,
+        "fp": 131,
+        "utility": 0.9162
+      },
+      {
+        "threshold": 0.2,
+        "recall_sensitivity": 1.0,
+        "specificity": 0.0,
+        "precision": 0.7127,
+        "f1_score": 0.8323,
+        "balanced_accuracy": 0.5,
+        "fn": 0,
+        "fp": 131,
+        "utility": 0.9162
+      },
+      {
+        "threshold": 0.21,
+        "recall_sensitivity": 1.0,
+        "specificity": 0.0,
+        "precision": 0.7127,
+        "f1_score": 0.8323,
+        "balanced_accuracy": 0.5,
+        "fn": 0,
+        "fp": 131,
+        "utility": 0.9162
+      },
+      {
+        "threshold": 0.22,
+        "recall_sensitivity": 1.0,
+        "specificity": 0.0,
+        "precision": 0.7127,
+        "f1_score": 0.8323,
+        "balanced_accuracy": 0.5,
+        "fn": 0,
+        "fp": 131,
+        "utility": 0.9162
+      },
+      {
+        "threshold": 0.23,
+        "recall_sensitivity": 1.0,
+        "specificity": 0.0,
+        "precision": 0.7127,
+        "f1_score": 0.8323,
+        "balanced_accuracy": 0.5,
+        "fn": 0,
+        "fp": 131,
+        "utility": 0.9162
+      },
+      {
+        "threshold": 0.24,
+        "recall_sensitivity": 1.0,
+        "specificity": 0.0,
+        "precision": 0.7127,
+        "f1_score": 0.8323,
+        "balanced_accuracy": 0.5,
+        "fn": 0,
+        "fp": 131,
+        "utility": 0.9162
+      },
+      {
+        "threshold": 0.25,
+        "recall_sensitivity": 1.0,
+        "specificity": 0.0,
+        "precision": 0.7127,
+        "f1_score": 0.8323,
+        "balanced_accuracy": 0.5,
+        "fn": 0,
+        "fp": 131,
+        "utility": 0.9162
+      },
+      {
+        "threshold": 0.26,
+        "recall_sensitivity": 1.0,
+        "specificity": 0.0,
+        "precision": 0.7127,
+        "f1_score": 0.8323,
+        "balanced_accuracy": 0.5,
+        "fn": 0,
+        "fp": 131,
+        "utility": 0.9162
+      },
+      {
+        "threshold": 0.27,
+        "recall_sensitivity": 1.0,
+        "specificity": 0.0,
+        "precision": 0.7127,
+        "f1_score": 0.8323,
+        "balanced_accuracy": 0.5,
+        "fn": 0,
+        "fp": 131,
+        "utility": 0.9162
+      },
+      {
+        "threshold": 0.28,
+        "recall_sensitivity": 1.0,
+        "specificity": 0.0,
+        "precision": 0.7127,
+        "f1_score": 0.8323,
+        "balanced_accuracy": 0.5,
+        "fn": 0,
+        "fp": 131,
+        "utility": 0.9162
+      },
+      {
+        "threshold": 0.29,
+        "recall_sensitivity": 1.0,
+        "specificity": 0.0,
+        "precision": 0.7127,
+        "f1_score": 0.8323,
+        "balanced_accuracy": 0.5,
+        "fn": 0,
+        "fp": 131,
+        "utility": 0.9162
+      },
+      {
+        "threshold": 0.3,
+        "recall_sensitivity": 1.0,
+        "specificity": 0.0,
+        "precision": 0.7127,
+        "f1_score": 0.8323,
+        "balanced_accuracy": 0.5,
+        "fn": 0,
+        "fp": 131,
+        "utility": 0.9162
+      },
+      {
+        "threshold": 0.31,
+        "recall_sensitivity": 0.9969,
+        "specificity": 0.0,
+        "precision": 0.7121,
+        "f1_score": 0.8308,
+        "balanced_accuracy": 0.4985,
+        "fn": 1,
+        "fp": 131,
+        "utility": 0.9139
+      },
+      {
+        "threshold": 0.32,
+        "recall_sensitivity": 0.9969,
+        "specificity": 0.0,
+        "precision": 0.7121,
+        "f1_score": 0.8308,
+        "balanced_accuracy": 0.4985,
+        "fn": 1,
+        "fp": 131,
+        "utility": 0.9139
+      },
+      {
+        "threshold": 0.33,
+        "recall_sensitivity": 0.9908,
+        "specificity": 0.0,
+        "precision": 0.7108,
+        "f1_score": 0.8278,
+        "balanced_accuracy": 0.4954,
+        "fn": 3,
+        "fp": 131,
+        "utility": 0.9093
+      },
+      {
+        "threshold": 0.34,
+        "recall_sensitivity": 0.9908,
+        "specificity": 0.0,
+        "precision": 0.7108,
+        "f1_score": 0.8278,
+        "balanced_accuracy": 0.4954,
+        "fn": 3,
+        "fp": 131,
+        "utility": 0.9093
+      },
+      {
+        "threshold": 0.35,
+        "recall_sensitivity": 0.9908,
+        "specificity": 0.0076,
+        "precision": 0.7124,
+        "f1_score": 0.8288,
+        "balanced_accuracy": 0.4992,
+        "fn": 3,
+        "fp": 130,
+        "utility": 0.9098
+      },
+      {
+        "threshold": 0.36,
+        "recall_sensitivity": 0.9877,
+        "specificity": 0.0153,
+        "precision": 0.7133,
+        "f1_score": 0.8284,
+        "balanced_accuracy": 0.5015,
+        "fn": 4,
+        "fp": 129,
+        "utility": 0.9081
+      },
+      {
+        "threshold": 0.37,
+        "recall_sensitivity": 0.9846,
+        "specificity": 0.0153,
+        "precision": 0.7127,
+        "f1_score": 0.8269,
+        "balanced_accuracy": 0.4999,
+        "fn": 5,
+        "fp": 129,
+        "utility": 0.9058
+      },
+      {
+        "threshold": 0.38,
+        "recall_sensitivity": 0.9846,
+        "specificity": 0.0229,
+        "precision": 0.7143,
+        "f1_score": 0.8279,
+        "balanced_accuracy": 0.5038,
+        "fn": 5,
+        "fp": 128,
+        "utility": 0.9062
+      },
+      {
+        "threshold": 0.39,
+        "recall_sensitivity": 0.9815,
+        "specificity": 0.0305,
+        "precision": 0.7152,
+        "f1_score": 0.8275,
+        "balanced_accuracy": 0.506,
+        "fn": 6,
+        "fp": 127,
+        "utility": 0.9045
+      },
+      {
+        "threshold": 0.4,
+        "recall_sensitivity": 0.9785,
+        "specificity": 0.0458,
+        "precision": 0.7178,
+        "f1_score": 0.8281,
+        "balanced_accuracy": 0.5121,
+        "fn": 7,
+        "fp": 125,
+        "utility": 0.9033
+      },
+      {
+        "threshold": 0.41,
+        "recall_sensitivity": 0.9723,
+        "specificity": 0.0611,
+        "precision": 0.7198,
+        "f1_score": 0.8272,
+        "balanced_accuracy": 0.5167,
+        "fn": 9,
+        "fp": 123,
+        "utility": 0.8998
+      },
+      {
+        "threshold": 0.42,
+        "recall_sensitivity": 0.9692,
+        "specificity": 0.084,
+        "precision": 0.7241,
+        "f1_score": 0.8289,
+        "balanced_accuracy": 0.5266,
+        "fn": 10,
+        "fp": 120,
+        "utility": 0.899
+      },
+      {
+        "threshold": 0.43,
+        "recall_sensitivity": 0.9631,
+        "specificity": 0.1069,
+        "precision": 0.7279,
+        "f1_score": 0.8291,
+        "balanced_accuracy": 0.535,
+        "fn": 12,
+        "fp": 117,
+        "utility": 0.8961
+      },
+      {
+        "threshold": 0.44,
+        "recall_sensitivity": 0.9508,
+        "specificity": 0.1145,
+        "precision": 0.7271,
+        "f1_score": 0.824,
+        "balanced_accuracy": 0.5326,
+        "fn": 16,
+        "fp": 116,
+        "utility": 0.8874
+      },
+      {
+        "threshold": 0.45,
+        "recall_sensitivity": 0.9446,
+        "specificity": 0.1603,
+        "precision": 0.7362,
+        "f1_score": 0.8275,
+        "balanced_accuracy": 0.5525,
+        "fn": 18,
+        "fp": 110,
+        "utility": 0.8861
+      },
+      {
+        "threshold": 0.46,
+        "recall_sensitivity": 0.9354,
+        "specificity": 0.1832,
+        "precision": 0.7397,
+        "f1_score": 0.8261,
+        "balanced_accuracy": 0.5593,
+        "fn": 21,
+        "fp": 107,
+        "utility": 0.8807
+      },
+      {
+        "threshold": 0.47,
+        "recall_sensitivity": 0.9231,
+        "specificity": 0.2214,
+        "precision": 0.7463,
+        "f1_score": 0.8253,
+        "balanced_accuracy": 0.5722,
+        "fn": 25,
+        "fp": 102,
+        "utility": 0.8742
+      },
+      {
+        "threshold": 0.48,
+        "recall_sensitivity": 0.9108,
+        "specificity": 0.2901,
+        "precision": 0.7609,
+        "f1_score": 0.8291,
+        "balanced_accuracy": 0.6004,
+        "fn": 29,
+        "fp": 93,
+        "utility": 0.87
+      },
+      {
+        "threshold": 0.49,
+        "recall_sensitivity": 0.8954,
+        "specificity": 0.2901,
+        "precision": 0.7578,
+        "f1_score": 0.8209,
+        "balanced_accuracy": 0.5927,
+        "fn": 34,
+        "fp": 93,
+        "utility": 0.8581
+      },
+      {
+        "threshold": 0.5,
+        "recall_sensitivity": 0.8738,
+        "specificity": 0.2977,
+        "precision": 0.7553,
+        "f1_score": 0.8103,
+        "balanced_accuracy": 0.5858,
+        "fn": 41,
+        "fp": 92,
+        "utility": 0.842
+      },
+      {
+        "threshold": 0.51,
+        "recall_sensitivity": 0.8554,
+        "specificity": 0.3206,
+        "precision": 0.7575,
+        "f1_score": 0.8035,
+        "balanced_accuracy": 0.588,
+        "fn": 47,
+        "fp": 89,
+        "utility": 0.8295
+      },
+      {
+        "threshold": 0.52,
+        "recall_sensitivity": 0.8523,
+        "specificity": 0.3588,
+        "precision": 0.7673,
+        "f1_score": 0.8076,
+        "balanced_accuracy": 0.6055,
+        "fn": 48,
+        "fp": 84,
+        "utility": 0.8299
+      },
+      {
+        "threshold": 0.53,
+        "recall_sensitivity": 0.84,
+        "specificity": 0.4122,
+        "precision": 0.78,
+        "f1_score": 0.8089,
+        "balanced_accuracy": 0.6261,
+        "fn": 52,
+        "fp": 77,
+        "utility": 0.8244
+      },
+      {
+        "threshold": 0.54,
+        "recall_sensitivity": 0.8185,
+        "specificity": 0.4427,
+        "precision": 0.7847,
+        "f1_score": 0.8012,
+        "balanced_accuracy": 0.6306,
+        "fn": 59,
+        "fp": 73,
+        "utility": 0.8098
+      },
+      {
+        "threshold": 0.55,
+        "recall_sensitivity": 0.7938,
+        "specificity": 0.4427,
+        "precision": 0.7795,
+        "f1_score": 0.7866,
+        "balanced_accuracy": 0.6183,
+        "fn": 67,
+        "fp": 73,
+        "utility": 0.7902
+      },
+      {
+        "threshold": 0.56,
+        "recall_sensitivity": 0.7754,
+        "specificity": 0.4809,
+        "precision": 0.7875,
+        "f1_score": 0.7814,
+        "balanced_accuracy": 0.6282,
+        "fn": 73,
+        "fp": 68,
+        "utility": 0.7784
+      },
+      {
+        "threshold": 0.57,
+        "recall_sensitivity": 0.76,
+        "specificity": 0.5038,
+        "precision": 0.7917,
+        "f1_score": 0.7755,
+        "balanced_accuracy": 0.6319,
+        "fn": 78,
+        "fp": 65,
+        "utility": 0.7677
+      },
+      {
+        "threshold": 0.58,
+        "recall_sensitivity": 0.7415,
+        "specificity": 0.542,
+        "precision": 0.8007,
+        "f1_score": 0.77,
+        "balanced_accuracy": 0.6418,
+        "fn": 84,
+        "fp": 60,
+        "utility": 0.7558
+      },
+      {
+        "threshold": 0.59,
+        "recall_sensitivity": 0.7385,
+        "specificity": 0.5496,
+        "precision": 0.8027,
+        "f1_score": 0.7692,
+        "balanced_accuracy": 0.644,
+        "fn": 85,
+        "fp": 59,
+        "utility": 0.7539
+      },
+      {
+        "threshold": 0.6,
+        "recall_sensitivity": 0.7292,
+        "specificity": 0.5802,
+        "precision": 0.8116,
+        "f1_score": 0.7682,
+        "balanced_accuracy": 0.6547,
+        "fn": 88,
+        "fp": 55,
+        "utility": 0.7487
+      },
+      {
+        "threshold": 0.61,
+        "recall_sensitivity": 0.7169,
+        "specificity": 0.6107,
+        "precision": 0.8204,
+        "f1_score": 0.7652,
+        "balanced_accuracy": 0.6638,
+        "fn": 92,
+        "fp": 51,
+        "utility": 0.741
+      },
+      {
+        "threshold": 0.62,
+        "recall_sensitivity": 0.6985,
+        "specificity": 0.6489,
+        "precision": 0.8315,
+        "f1_score": 0.7592,
+        "balanced_accuracy": 0.6737,
+        "fn": 98,
+        "fp": 46,
+        "utility": 0.7288
+      },
+      {
+        "threshold": 0.63,
+        "recall_sensitivity": 0.68,
+        "specificity": 0.6565,
+        "precision": 0.8308,
+        "f1_score": 0.7479,
+        "balanced_accuracy": 0.6682,
+        "fn": 104,
+        "fp": 45,
+        "utility": 0.714
+      },
+      {
+        "threshold": 0.64,
+        "recall_sensitivity": 0.6677,
+        "specificity": 0.687,
+        "precision": 0.8411,
+        "f1_score": 0.7444,
+        "balanced_accuracy": 0.6774,
+        "fn": 108,
+        "fp": 41,
+        "utility": 0.706
+      },
+      {
+        "threshold": 0.65,
+        "recall_sensitivity": 0.6492,
+        "specificity": 0.6947,
+        "precision": 0.8406,
+        "f1_score": 0.7326,
+        "balanced_accuracy": 0.6719,
+        "fn": 114,
+        "fp": 40,
+        "utility": 0.6909
+      },
+      {
+        "threshold": 0.66,
+        "recall_sensitivity": 0.6308,
+        "specificity": 0.7176,
+        "precision": 0.8471,
+        "f1_score": 0.7231,
+        "balanced_accuracy": 0.6742,
+        "fn": 120,
+        "fp": 37,
+        "utility": 0.6769
+      },
+      {
+        "threshold": 0.67,
+        "recall_sensitivity": 0.6092,
+        "specificity": 0.7328,
+        "precision": 0.8498,
+        "f1_score": 0.7097,
+        "balanced_accuracy": 0.671,
+        "fn": 127,
+        "fp": 35,
+        "utility": 0.6594
+      },
+      {
+        "threshold": 0.68,
+        "recall_sensitivity": 0.5908,
+        "specificity": 0.7481,
+        "precision": 0.8533,
+        "f1_score": 0.6982,
+        "balanced_accuracy": 0.6694,
+        "fn": 133,
+        "fp": 33,
+        "utility": 0.6445
+      },
+      {
+        "threshold": 0.69,
+        "recall_sensitivity": 0.5723,
+        "specificity": 0.771,
+        "precision": 0.8611,
+        "f1_score": 0.6876,
+        "balanced_accuracy": 0.6717,
+        "fn": 139,
+        "fp": 30,
+        "utility": 0.63
+      },
+      {
+        "threshold": 0.7,
+        "recall_sensitivity": 0.5569,
+        "specificity": 0.7863,
+        "precision": 0.866,
+        "f1_score": 0.6779,
+        "balanced_accuracy": 0.6716,
+        "fn": 144,
+        "fp": 28,
+        "utility": 0.6174
+      },
+      {
+        "threshold": 0.71,
+        "recall_sensitivity": 0.5415,
+        "specificity": 0.8015,
+        "precision": 0.8713,
+        "f1_score": 0.6679,
+        "balanced_accuracy": 0.6715,
+        "fn": 149,
+        "fp": 26,
+        "utility": 0.6047
+      },
+      {
+        "threshold": 0.72,
+        "recall_sensitivity": 0.5292,
+        "specificity": 0.8168,
+        "precision": 0.8776,
+        "f1_score": 0.6603,
+        "balanced_accuracy": 0.673,
+        "fn": 153,
+        "fp": 24,
+        "utility": 0.5948
+      },
+      {
+        "threshold": 0.73,
+        "recall_sensitivity": 0.52,
+        "specificity": 0.8321,
+        "precision": 0.8848,
+        "f1_score": 0.655,
+        "balanced_accuracy": 0.676,
+        "fn": 156,
+        "fp": 22,
+        "utility": 0.5875
+      },
+      {
+        "threshold": 0.74,
+        "recall_sensitivity": 0.5015,
+        "specificity": 0.8397,
+        "precision": 0.8859,
+        "f1_score": 0.6405,
+        "balanced_accuracy": 0.6706,
+        "fn": 162,
+        "fp": 21,
+        "utility": 0.571
+      },
+      {
+        "threshold": 0.75,
+        "recall_sensitivity": 0.4985,
+        "specificity": 0.8473,
+        "precision": 0.8901,
+        "f1_score": 0.6391,
+        "balanced_accuracy": 0.6729,
+        "fn": 163,
+        "fp": 20,
+        "utility": 0.5688
+      },
+      {
+        "threshold": 0.76,
+        "recall_sensitivity": 0.4923,
+        "specificity": 0.8702,
+        "precision": 0.904,
+        "f1_score": 0.6375,
+        "balanced_accuracy": 0.6813,
+        "fn": 165,
+        "fp": 17,
+        "utility": 0.5649
+      },
+      {
+        "threshold": 0.77,
+        "recall_sensitivity": 0.4831,
+        "specificity": 0.8855,
+        "precision": 0.9128,
+        "f1_score": 0.6318,
+        "balanced_accuracy": 0.6843,
+        "fn": 168,
+        "fp": 15,
+        "utility": 0.5575
+      },
+      {
+        "threshold": 0.78,
+        "recall_sensitivity": 0.4677,
+        "specificity": 0.8931,
+        "precision": 0.9157,
+        "f1_score": 0.6191,
+        "balanced_accuracy": 0.6804,
+        "fn": 173,
+        "fp": 14,
+        "utility": 0.5434
+      },
+      {
+        "threshold": 0.79,
+        "recall_sensitivity": 0.4523,
+        "specificity": 0.8931,
+        "precision": 0.913,
+        "f1_score": 0.6049,
+        "balanced_accuracy": 0.6727,
+        "fn": 178,
+        "fp": 14,
+        "utility": 0.5286
+      },
+      {
+        "threshold": 0.8,
+        "recall_sensitivity": 0.4369,
+        "specificity": 0.9008,
+        "precision": 0.9161,
+        "f1_score": 0.5917,
+        "balanced_accuracy": 0.6688,
+        "fn": 183,
+        "fp": 13,
+        "utility": 0.5143
+      },
+      {
+        "threshold": 0.81,
+        "recall_sensitivity": 0.4246,
+        "specificity": 0.9313,
+        "precision": 0.9388,
+        "f1_score": 0.5847,
+        "balanced_accuracy": 0.678,
+        "fn": 187,
+        "fp": 9,
+        "utility": 0.5047
+      },
+      {
+        "threshold": 0.82,
+        "recall_sensitivity": 0.4062,
+        "specificity": 0.9466,
+        "precision": 0.9496,
+        "f1_score": 0.569,
+        "balanced_accuracy": 0.6764,
+        "fn": 193,
+        "fp": 7,
+        "utility": 0.4876
+      },
+      {
+        "threshold": 0.83,
+        "recall_sensitivity": 0.3877,
+        "specificity": 0.9466,
+        "precision": 0.9474,
+        "f1_score": 0.5502,
+        "balanced_accuracy": 0.6671,
+        "fn": 199,
+        "fp": 7,
+        "utility": 0.4689
+      },
+      {
+        "threshold": 0.84,
+        "recall_sensitivity": 0.3723,
+        "specificity": 0.9466,
+        "precision": 0.9453,
+        "f1_score": 0.5342,
+        "balanced_accuracy": 0.6594,
+        "fn": 204,
+        "fp": 7,
+        "utility": 0.4533
+      },
+      {
+        "threshold": 0.85,
+        "recall_sensitivity": 0.3508,
+        "specificity": 0.9618,
+        "precision": 0.958,
+        "f1_score": 0.5135,
+        "balanced_accuracy": 0.6563,
+        "fn": 211,
+        "fp": 5,
+        "utility": 0.4321
+      }
+    ]
+  }
+}
